@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import confetti from 'canvas-confetti';
-import { Shuffle, Users, Trash2, Trophy, Sparkles, Settings2, RefreshCw } from 'lucide-react';
+import { Shuffle, Users, Trash2, Trophy, Sparkles, Settings2, RefreshCw, Sun, Moon } from 'lucide-react';
 
 type Mode = 'single' | 'teams';
 
@@ -22,6 +22,7 @@ function shuffleArray<T>(array: T[]): T[] {
 }
 
 export default function App() {
+  const [isDark, setIsDark] = useState<boolean>(true);
   const [rawNames, setRawNames] = useState('');
   const [mode, setMode] = useState<Mode>('single');
   const [singleCount, setSingleCount] = useState<number>(1);
@@ -106,8 +107,16 @@ export default function App() {
 
   const currentNamesCount = getValidNames().length;
 
+  useEffect(() => {
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [isDark]);
+
   return (
-    <div className="min-h-screen bg-[#0f172a] text-white font-sans selection:bg-rose-500">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#0f172a] text-slate-900 dark:text-white font-sans selection:bg-rose-500 transition-colors duration-300">
       {/* Background Orbs for aesthetic */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-rose-500/10 blur-[120px]" />
@@ -119,21 +128,30 @@ export default function App() {
         {/* Header / Config Column (Left) */}
         <div className="lg:col-span-5 flex flex-col gap-6 lg:sticky lg:top-8">
           <div className="glass rounded-3xl p-6 flex flex-col gap-6 h-full">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="w-12 h-12 vibrant-gradient rounded-xl flex items-center justify-center shadow-[0_10px_30px_-10px_rgba(244,63,94,0.3)]">
-                <Sparkles className="w-6 h-6 text-white" />
+            <div className="flex justify-between items-start mb-2">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 vibrant-gradient rounded-xl flex items-center justify-center shadow-[0_10px_30px_-10px_rgba(244,63,94,0.3)]">
+                  <Sparkles className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Sortear<span className="text-rose-500">.io</span></h1>
+                  <p className="text-slate-600 dark:text-slate-400 text-sm font-bold uppercase tracking-widest mt-1">Aleatório & Vibrante</p>
+                </div>
               </div>
-              <div>
-                <h1 className="text-3xl font-bold tracking-tight text-white">Sortear<span className="text-rose-500">.io</span></h1>
-                <p className="text-slate-400 text-sm font-bold uppercase tracking-widest mt-1">Aleatório & Vibrante</p>
-              </div>
+              <button
+                onClick={() => setIsDark(!isDark)}
+                className="p-3 bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 rounded-xl text-slate-600 dark:text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 transition-colors shadow-sm"
+                title="Alternar Tema"
+              >
+                {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              </button>
             </div>
 
-            <div className="bg-slate-900/80 border border-slate-800 p-1 rounded-2xl flex relative w-full overflow-hidden">
+            <div className="bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-slate-800 p-1 rounded-2xl flex relative w-full overflow-hidden">
                {/* Tab Background */}
                <motion.div 
                  layoutId="activeTab"
-                 className="absolute top-1 bottom-1 left-1 bg-white/[0.08] border border-white/10 shadow-sm rounded-xl"
+                 className="absolute top-1 bottom-1 left-1 bg-black/[0.05] dark:bg-white/[0.08] border border-black/5 dark:border-white/10 shadow-sm rounded-xl"
                  initial={false}
                  animate={{ 
                    width: 'calc(50% - 4px)',
@@ -144,14 +162,14 @@ export default function App() {
 
             <button
               onClick={() => setMode('single')}
-              className={`relative z-10 flex-1 flex items-center justify-center gap-2 py-3 px-4 text-sm font-medium transition-colors ${mode === 'single' ? 'text-white' : 'text-slate-400 hover:text-slate-200'}`}
+              className={`relative z-10 flex-1 flex items-center justify-center gap-2 py-3 px-4 text-sm font-medium transition-colors ${mode === 'single' ? 'text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}`}
             >
               <Trophy className="w-4 h-4" />
               Sorteio Único
             </button>
             <button
               onClick={() => setMode('teams')}
-              className={`relative z-10 flex-1 flex items-center justify-center gap-2 py-3 px-4 text-sm font-medium transition-colors ${mode === 'teams' ? 'text-white' : 'text-slate-400 hover:text-slate-200'}`}
+              className={`relative z-10 flex-1 flex items-center justify-center gap-2 py-3 px-4 text-sm font-medium transition-colors ${mode === 'teams' ? 'text-slate-900 dark:text-white' : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'}`}
             >
               <Users className="w-4 h-4" />
               Gerar Equipes
@@ -160,9 +178,9 @@ export default function App() {
 
             <div className="flex flex-col gap-4">
               <div className="flex items-center justify-between">
-                <label htmlFor="names" className="text-sm font-bold text-slate-400 uppercase tracking-tighter flex items-center gap-2">
+                <label htmlFor="names" className="text-sm font-bold text-slate-600 dark:text-slate-400 uppercase tracking-tighter flex items-center gap-2">
                   Lista de Participantes
-                  <span className="bg-slate-800 px-2 py-0.5 rounded-full text-xs text-slate-400 tabular-nums">
+                  <span className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 px-2 py-0.5 rounded-full text-xs text-slate-600 dark:text-slate-400 tabular-nums">
                     {currentNamesCount}
                   </span>
                 </label>
@@ -180,13 +198,13 @@ export default function App() {
                 value={rawNames}
                 onChange={(e) => setRawNames(e.target.value)}
                 placeholder="Cole os nomes aqui...&#10;Um nome por linha&#10;Ex:&#10;Ana&#10;Bruno&#10;Carlos"
-                className="bg-slate-950/50 border border-slate-700 rounded-2xl p-4 min-h-[240px] text-slate-300 font-mono text-sm focus:outline-none focus:border-rose-500 transition-colors resize-y"
+                className="bg-white/60 dark:bg-slate-950/50 border border-slate-300 dark:border-slate-700 rounded-2xl p-4 min-h-[240px] text-slate-700 dark:text-slate-300 font-mono text-sm focus:outline-none focus:border-rose-500 transition-colors resize-y"
               />
             </div>
 
             {/* Configuration Settings */}
-            <div className="p-4 bg-slate-900/80 rounded-2xl border border-slate-800 flex flex-col gap-5">
-              <h3 className="text-xs text-slate-400 uppercase font-bold flex items-center gap-2">
+            <div className="p-4 bg-white/80 dark:bg-slate-900/80 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col gap-5">
+              <h3 className="text-xs text-slate-600 dark:text-slate-400 uppercase font-bold flex items-center gap-2">
                 <Settings2 className="w-4 h-4" />
                 Configurações do Sorteio
               </h3>
@@ -199,7 +217,7 @@ export default function App() {
                     exit={{ opacity: 0, height: 0 }}
                     className="flex items-center justify-between"
                   >
-                    <label className="text-sm font-medium text-slate-300">Quantidade de Vencedores</label>
+                    <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Quantidade de Vencedores</label>
                     <div className="flex items-center gap-3">
                       <input 
                         type="number" 
@@ -207,7 +225,7 @@ export default function App() {
                         max={Math.max(1, currentNamesCount)}
                         value={singleCount}
                         onChange={(e) => setSingleCount(Math.max(1, parseInt(e.target.value) || 1))}
-                        className="bg-slate-800 border border-slate-700 rounded-lg w-16 px-2 py-1.5 text-center focus:outline-none focus:border-rose-500 transition-colors tabular-nums font-mono text-sm text-slate-200"
+                        className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg w-16 px-2 py-1.5 text-center focus:outline-none focus:border-rose-500 transition-colors tabular-nums font-mono text-sm text-slate-900 dark:text-slate-200"
                       />
                     </div>
                   </motion.div>
@@ -218,7 +236,7 @@ export default function App() {
                      exit={{ opacity: 0, height: 0 }}
                      className="flex items-center justify-between"
                   >
-                    <label className="text-sm font-medium text-slate-300">Número de Equipes</label>
+                    <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Número de Equipes</label>
                     <div className="flex items-center gap-3">
                       <input 
                         type="number" 
@@ -226,7 +244,7 @@ export default function App() {
                         max={Math.max(2, currentNamesCount)}
                         value={teamCount}
                         onChange={(e) => setTeamCount(Math.max(2, parseInt(e.target.value) || 2))}
-                        className="bg-slate-800 border border-slate-700 rounded-lg w-16 px-2 py-1.5 text-center focus:outline-none focus:border-rose-500 transition-colors tabular-nums font-mono text-sm text-slate-200"
+                        className="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg w-16 px-2 py-1.5 text-center focus:outline-none focus:border-rose-500 transition-colors tabular-nums font-mono text-sm text-slate-900 dark:text-slate-200"
                       />
                     </div>
                   </motion.div>
@@ -235,7 +253,7 @@ export default function App() {
 
               <label className="flex items-center justify-between cursor-pointer group">
                 <div className="flex flex-col">
-                  <span className="text-sm text-slate-300 group-hover:text-white transition-colors">Sem Repetição</span>
+                  <span className="text-sm text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-white transition-colors">Sem Repetição</span>
                   <span className="text-xs text-slate-500 mt-1">Remove da lista ao sortear</span>
                 </div>
                 <div className="relative">
@@ -245,7 +263,7 @@ export default function App() {
                     checked={removeDrawn}
                     onChange={(e) => setRemoveDrawn(e.target.checked)}
                   />
-                  <div className="w-11 h-6 bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-slate-400 after:border-slate-400 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-rose-500 after:peer-checked:bg-white after:peer-checked:border-white"></div>
+                  <div className="w-11 h-6 bg-slate-200 dark:bg-slate-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white dark:after:bg-slate-400 after:border-slate-300 dark:after:border-slate-400 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-rose-500 after:peer-checked:bg-white after:peer-checked:border-white"></div>
                 </div>
               </label>
             </div>
@@ -255,7 +273,7 @@ export default function App() {
               disabled={isShuffling || currentNamesCount === 0}
               className={`w-full py-4 mt-2 rounded-2xl font-black text-lg flex items-center justify-center gap-3 transition-transform duration-300 uppercase tracking-tight
                 ${currentNamesCount === 0 
-                  ? 'bg-slate-800/50 text-slate-500 cursor-not-allowed shadow-none border border-slate-800' 
+                  ? 'bg-white/50 dark:bg-slate-800/50 text-slate-400 dark:text-slate-500 cursor-not-allowed shadow-none border border-slate-200 dark:border-slate-800' 
                   : isShuffling
                     ? 'vibrant-gradient text-white cursor-wait opacity-80'
                     : 'vibrant-gradient hover:scale-[1.02] active:scale-95 text-white shadow-[0_10px_30px_-10px_rgba(35,38,245,0.3)]'
@@ -289,11 +307,11 @@ export default function App() {
                 exit={{ opacity: 0, scale: 0.95 }}
                 className="text-center p-8 max-w-sm"
               >
-                <div className="w-20 h-20 bg-slate-800/80 backdrop-blur border border-slate-700/50 rounded-[2rem] shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)] flex items-center justify-center mx-auto mb-6 transform rotate-12">
-                  <Shuffle className="w-10 h-10 text-slate-500 -rotate-12" />
+                <div className="w-20 h-20 bg-white/80 dark:bg-slate-800/80 backdrop-blur border border-slate-200/50 dark:border-slate-700/50 rounded-[2rem] shadow-[0_10px_30px_-10px_rgba(0,0,0,0.1)] dark:shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)] flex items-center justify-center mx-auto mb-6 transform rotate-12">
+                  <Shuffle className="w-10 h-10 text-slate-400 dark:text-slate-500 -rotate-12" />
                 </div>
-                <h3 className="text-xl font-medium text-white mb-2 tracking-tight">Pronto para a mágica</h3>
-                <p className="text-slate-400 text-sm">Adicione nomes na lista e inicie o sorteio para ver os resultados aqui.</p>
+                <h3 className="text-xl font-medium text-slate-900 dark:text-white mb-2 tracking-tight">Pronto para a mágica</h3>
+                <p className="text-slate-500 dark:text-slate-400 text-sm">Adicione nomes na lista e inicie o sorteio para ver os resultados aqui.</p>
               </motion.div>
             ) : isShuffling ? (
               <motion.div
@@ -314,7 +332,7 @@ export default function App() {
                       animate={{ scale: 1, opacity: 1, y: 0 }}
                       exit={{ scale: 0.8, opacity: 0, y: -20 }}
                       transition={{ type: "spring", bounce: 0.6 }}
-                      className="px-6 py-3 glass rounded-2xl text-xl font-black tracking-tight text-white shadow-2xl"
+                      className="px-6 py-3 glass rounded-2xl text-xl font-black tracking-tight text-slate-900 dark:text-white shadow-2xl"
                     >
                       {name}
                     </motion.div>
@@ -330,7 +348,7 @@ export default function App() {
                 className="w-full h-full flex flex-col gap-6"
               >
                 <div className="flex justify-between items-end">
-                  <h2 className="text-3xl font-black tracking-tighter text-white">Resultado Gerado</h2>
+                  <h2 className="text-3xl font-black tracking-tighter text-slate-900 dark:text-white">Resultado Gerado</h2>
                   <div className="flex gap-2">
                     <div className="px-3 py-1 bg-rose-500/20 text-rose-400 rounded-full text-xs font-bold border border-rose-500/30 uppercase tracking-wider">Aleatório</div>
                     <div className="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-xs font-bold border border-blue-500/30 uppercase tracking-wider">Fisher-Yates</div>
@@ -351,7 +369,7 @@ export default function App() {
                        <span className="font-black text-slate-500 uppercase text-xs tracking-widest">
                           {index === 0 && results.winners?.length > 1 ? '1º Sorteado' : `Sorteado ${index + 1}`}
                         </span>
-                        <span className="text-4xl font-black text-white tracking-tight">
+                        <span className="text-4xl font-black text-slate-900 dark:text-white tracking-tight">
                           {winner}
                         </span>
                     </motion.div>
@@ -359,8 +377,8 @@ export default function App() {
                 </div>
 
                 <div className="glass rounded-2xl p-4 flex justify-between items-center mt-auto">
-                  <p className="text-slate-400 text-sm italic">"Sorteio realizado com 100% de entropia local."</p>
-                  <button onClick={handleDraw} className="text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-rose-400 transition-colors">Sortear Novamente</button>
+                  <p className="text-slate-600 dark:text-slate-400 text-sm italic">"Sorteio realizado com 100% de entropia local."</p>
+                  <button onClick={handleDraw} className="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 transition-colors">Sortear Novamente</button>
                 </div>
               </motion.div>
             ) : results?.type === 'teams' ? (
@@ -371,7 +389,7 @@ export default function App() {
                 className="w-full h-full flex flex-col gap-6"
               >
                 <div className="flex justify-between items-end">
-                  <h2 className="text-3xl font-black tracking-tighter text-white">Equipes Geradas</h2>
+                  <h2 className="text-3xl font-black tracking-tighter text-slate-900 dark:text-white">Equipes Geradas</h2>
                   <div className="flex gap-2">
                     <div className="px-3 py-1 bg-rose-500/20 text-rose-400 rounded-full text-xs font-bold border border-rose-500/30 uppercase tracking-wider">Aleatório</div>
                     <div className="px-3 py-1 bg-blue-500/20 text-blue-400 rounded-full text-xs font-bold border border-blue-500/30 uppercase tracking-wider">Fisher-Yates</div>
@@ -404,7 +422,7 @@ export default function App() {
                         </div>
                         <ul className="space-y-3">
                           {team.map((member, mIndex) => (
-                            <li key={mIndex} className="p-3 bg-white/5 rounded-xl border border-white/5 font-medium text-white shadow-sm flex items-center justify-between">
+                            <li key={mIndex} className="p-3 bg-black/5 dark:bg-white/5 rounded-xl border border-black/5 dark:border-white/5 font-medium text-slate-800 dark:text-white shadow-sm flex items-center justify-between">
                               {member}
                             </li>
                           ))}
@@ -415,8 +433,8 @@ export default function App() {
                 </div>
 
                 <div className="glass rounded-2xl p-4 flex justify-between items-center mt-auto">
-                  <p className="text-slate-400 text-sm italic">"Equipes divididas com 100% de entropia local."</p>
-                  <button onClick={handleDraw} className="text-xs font-bold uppercase tracking-widest text-slate-400 hover:text-rose-400 transition-colors">Nova Divisão</button>
+                  <p className="text-slate-600 dark:text-slate-400 text-sm italic">"Equipes divididas com 100% de entropia local."</p>
+                  <button onClick={handleDraw} className="text-xs font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 transition-colors">Nova Divisão</button>
                 </div>
               </motion.div>
             ) : null}
